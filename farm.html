@@ -3,16 +3,28 @@
 
 <head>
     <title>Sheppy the explorer</title>
-    <link rel="icon" href="assets/img/sheppy_favicon.png" type="image/x-icon">
+    <link rel="icon" href="src/assets/img/sheppy_favicon.png" type="image/x-icon">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-    <!-- <link type="text/css" rel="stylesheet" href="main.css"> -->
+    <link type="text/css" rel="stylesheet" href="src/css/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
 </head>
 
 <body>
-    <div id="info"></div>
-    <audio id="whistle" src="./assets/sounds/whistle_dog_call.mp4"></audio>
-    <audio id="forest_sounds" src="./assets/sounds/forest_spring_sounds.wav"></audio>
+    <audio id="forest_sounds" src="./src/assets/sounds/forest_spring_sounds.wav"></audio>
+    <audio id="whistle" src="./src/assets/sounds/whistle_dog_call.mp4"></audio>
+
+    <div class="data-container" id="data-container-r">
+        <h2>Keybindings</h2>
+        <ul dir="auto">
+            <li id="kb_jump" class="hoverer">Spacebar: Jump</li>
+            <li id="kb_whistle" class="hoverer">G: Whistle</li>
+            <li id="kb_stand_up" class="hoverer">R: Stand up</li>
+            <li id="kb_lay_down" class="hoverer">T: Lay down</li>
+            <li id="kb_sit_down" class="hoverer">Y: Sit down</li>
+            <li id="kb_scratch_ear" class="hoverer">B: Scratch ear</li>
+        </ul>
+    </div>
 
     <!-- Import maps polyfill -->
     <!-- Remove this when import maps will be widely supported -->
@@ -21,7 +33,7 @@
     <script type="importmap">
 			{
 				"imports": {
-					"three": "./build/three.module.js",
+					"three": "./src/build/three.module.js",
 					"three/addons/": "./jsm/"
 				}
 			}
@@ -30,7 +42,7 @@
     <!-- <script src="build/three.js"></script> -->
     <!-- <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script> -->
 
-    <script type="module" src="./js/prototype_2.js"></script>
+    <script type="module" src="./src/js/prototype_2.js"></script>
 
 </body>
 

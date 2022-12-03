@@ -7,7 +7,7 @@ import { TWEEN } from '../build/tween.module.min.js';
 import { SkeletonHelper } from '../build/three.module.js';
 
 // Variable initialization
-let container, stats, clock, gui, mixer, actions, activeAction, previousAction;
+let container, stats, statsContainer, clock, gui, mixer, actions, activeAction, previousAction;
 let camera, scene, renderer, model, face, t0, camcontrols, shepperd;
 
 // Objects
@@ -40,20 +40,20 @@ function init() {
     // loadDirLight();
 
     createGroundGrid(); // Ground grid
-    play("forest_sounds", true);
+    // play("forest_sounds", true); // Surround sound
 
     // Models & textures
-    const wolfTexture = loadTexture('./assets/textures/white1.jpg', false); // Texture 
-    createModel(undefined, 'assets/models/animals/chicken_-_rigged.glb', 'chicken-rig|walking', 0.004, "animal", "chicken", true, 10, 0, 0, true, 90); // Chicken
-    createModel(undefined, 'assets/models/animals/bear_o_rigged.glb', undefined, 0.03, "animal", "bear", true, -10); // Bear
-    createModel(undefined, 'assets/models/animals/low_poly_deer.glb', undefined, 1.8, "animal", "deer", true, -5); // Deer
-    createModel(undefined, 'assets/models/animals/low_poly_fox_running_animation.glb', undefined, 0.1, "animal", "fox", true, 5, 0, 0, true, 89.7); // Fox
-    createModel(undefined, 'assets/models/animals/low_poly_rabbit.glb', undefined, 0.3, "animal", "rabbit", true, 15); // Rabbit
-    createModel(undefined, 'assets/models/animals/low-poly_racoon_run_animation.glb', undefined, 1.2, "animal", "racoon", true, -15); // Racoon
-    createModel(undefined, 'assets/models/animals/low-poly_sheep.glb', undefined, 1.2, "animal", "sheep", true, -20, 1, 0, true, 3); // Sheep
-    createModel(undefined, 'assets/models/animals/rigged_mid_poly_horse.glb', undefined, 1.6, "animal", "horse", true, 20, 0, 0, true, 1.5); // Horse
-    createModel(wolfTexture, 'assets/models/animals/fully_rigged_ikfk_wolf.glb', undefined, 0.010, "animal", "wolf"); // Wolf - 'Run'
-    createModel(undefined, 'assets/models/animals/stylized_low_poly_german_shepherd.glb', "Idle1", 0.08, "animal", "shepperd", true, 0, 0, 5); // German shepperd puppy
+    const wolfTexture = loadTexture('src/assets/textures/white1.jpg', false); // Texture 
+    createModel(undefined, 'src/assets/models/animals/chicken_-_rigged.glb', 'chicken-rig|walking', 0.004, "animal", "chicken", true, 10, 0, 0, true, 90); // Chicken
+    createModel(undefined, 'src/assets/models/animals/bear_o_rigged.glb', undefined, 0.03, "animal", "bear", true, -10); // Bear
+    createModel(undefined, 'src/assets/models/animals/low_poly_deer.glb', undefined, 1.8, "animal", "deer", true, -5); // Deer
+    createModel(undefined, 'src/assets/models/animals/low_poly_fox_running_animation.glb', undefined, 0.1, "animal", "fox", true, 5, 0, 0, true, 89.7); // Fox
+    createModel(undefined, 'src/assets/models/animals/low_poly_rabbit.glb', undefined, 0.3, "animal", "rabbit", true, 15); // Rabbit
+    createModel(undefined, 'src/assets/models/animals/low-poly_racoon_run_animation.glb', undefined, 1.2, "animal", "racoon", true, -15); // Racoon
+    createModel(undefined, 'src/assets/models/animals/low-poly_sheep.glb', undefined, 1.2, "animal", "sheep", true, -20, 1, 0, true, 3); // Sheep
+    createModel(undefined, 'src/assets/models/animals/rigged_mid_poly_horse.glb', undefined, 1.6, "animal", "horse", true, 20, 0, 0, true, 1.5); // Horse
+    createModel(wolfTexture, 'src/assets/models/animals/fully_rigged_ikfk_wolf.glb', undefined, 0.010, "animal", "wolf"); // Wolf - 'Run'
+    createModel(undefined, 'src/assets/models/animals/stylized_low_poly_german_shepherd.glb', "Idle1", 0.08, "animal", "shepperd", true, 0, 0, 5); // German shepperd puppy
 
     // Events listeners
     window.addEventListener('resize', onWindowResize);
@@ -161,7 +161,7 @@ function createGUI(model, animations, anim) {
         actions[clip.name] = action;
     }
 
-    console.log(actions);
+    // console.log(actions);
     activeAction = actions[anim];
     activeAction.play();
 
@@ -265,7 +265,9 @@ function onKeyDown(key) {
             // BUG: if spacebar is activated when reached point p - animation gets stuck in walkcycle instead of laying down (prev)
             activeActionCases('Jump'); break;
         case 71: // Key 'G' to play 'whistle' sound and activate ear twitch animation
-            play("whistle"); activeActionCases('IdleEarTwitch', false); break;
+            // BUG: if whistle animation has not ended and walking animation is activated
+            // whistle can be activated while walking before the previous walking animation is finished
+            activeActionCases('IdleEarTwitch', false, true, false, true); break;
         case 82: // Key 'R' to activate idle (standing) animation
             activeActionCases('Idle1', false, false, true); break;
         case 84: // Key 'T' to activate laying down animation
@@ -277,16 +279,17 @@ function onKeyDown(key) {
     }
 }
 
-function auxAction(aux, nxAux, loopPrev, loop) {
+function auxAction(aux, nxAux, loopPrev, loop, sound = false) {
     setAction(actions[aux], loop);
     if (loopPrev) setTimeout(() => { setAction(actions[nxAux], true); }, 1500);
+    if (sound) play("whistle");
 }
 
-function activeActionCases(aux, walkAct = true, loopPrev = true, loop = false) {
-    if (activeAction == actions['Idle1']) auxAction(aux, 'Idle1', loopPrev, loop);
-    else if (activeAction == actions['LayDown']) auxAction(aux, 'LayDown', loopPrev, loop);
-    else if (activeAction == actions['SitDown']) auxAction(aux, 'SitDown', loopPrev, loop);
-    else if (activeAction == actions['WalkCycle']) if (walkAct) auxAction(aux, 'WalkCycle', loopPrev, loop);
+function activeActionCases(aux, walkAct = true, loopPrev = true, loop = false, sound) {    
+    if (activeAction == actions['Idle1']) auxAction(aux, 'Idle1', loopPrev, loop, sound);
+    else if (activeAction == actions['LayDown']) auxAction(aux, 'LayDown', loopPrev, loop, sound);
+    else if (activeAction == actions['SitDown']) auxAction(aux, 'SitDown', loopPrev, loop, sound);
+    else if (activeAction == actions['WalkCycle']) if (walkAct) auxAction(aux, 'WalkCycle', loopPrev, loop, sound);
 }
 
 function play(element, loop = false) {
@@ -294,7 +297,6 @@ function play(element, loop = false) {
     if (loop)
         document.getElementById(element).addEventListener('ended', function () {
             this.currentTime = 0;
-            console.log("replayed");
             this.play();
         }, false);
     audio.play();

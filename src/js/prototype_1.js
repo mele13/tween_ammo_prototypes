@@ -1,4 +1,4 @@
-import { GLTFLoader } from "../build/GLTFLoader.js";
+import { GLTFLoader } from "../../build/GLTFLoader.js";
 
 // Scene, renderer & cameras
 let scene, renderer;
