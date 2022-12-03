@@ -2,26 +2,38 @@ import * as THREE from 'https://threejs.org/build/three.module.js';
 import Stats from '../build/stats.module.js';
 import { GUI } from '../build/lil-gui.module.min.js';
 import { GLTFLoader } from '../build/GLTFLoader.js';
+import { DRACOLoader } from '../build/DRACOLoader.js';
 import { OrbitControls } from "https://threejs.org/examples/jsm/controls/OrbitControls.js";
 import { TWEEN } from '../build/tween.module.min.js';
 import { SkeletonHelper } from '../build/three.module.js';
+import { AmmoPhysics } from '../build/physics.js';
 
 // Variable initialization
 let container, stats, statsContainer, clock, gui, mixer, actions, activeAction, previousAction;
 let camera, scene, renderer, model, face, t0, camcontrols, shepperd;
 
 // Objects
-let animals = [], sceneMeshes = [];
+let animals = [], sceneMeshes = [], buildings = [];
 
 // Model movement
 const raycaster = new THREE.Raycaster();
 const targetQuaternion = new THREE.Quaternion();
 let modelReady = false;
 
-init();
-animate();
+// Physics
+let physicsWorld;
+let rigidBodies = [];
+
+Ammo().then(function (AmmoLib) {
+    Ammo = AmmoLib;
+    init();
+    animate();
+});
 
 function init() {
+    // Ammo initialization
+    setupPhysicsWorld();
+
     container = document.createElement('div');
     document.body.appendChild(container);
 
@@ -40,20 +52,12 @@ function init() {
     // loadDirLight();
 
     createGroundGrid(); // Ground grid
-    // play("forest_sounds", true); // Surround sound
+    // play("forest_sounds", true); // Surround sound    
 
     // Models & textures
-    const wolfTexture = loadTexture('src/assets/textures/white1.jpg', false); // Texture 
-    createModel(undefined, 'src/assets/models/animals/chicken_-_rigged.glb', 'chicken-rig|walking', 0.004, "animal", "chicken", true, 10, 0, 0, true, 90); // Chicken
-    createModel(undefined, 'src/assets/models/animals/bear_o_rigged.glb', undefined, 0.03, "animal", "bear", true, -10); // Bear
-    createModel(undefined, 'src/assets/models/animals/low_poly_deer.glb', undefined, 1.8, "animal", "deer", true, -5); // Deer
-    createModel(undefined, 'src/assets/models/animals/low_poly_fox_running_animation.glb', undefined, 0.1, "animal", "fox", true, 5, 0, 0, true, 89.7); // Fox
-    createModel(undefined, 'src/assets/models/animals/low_poly_rabbit.glb', undefined, 0.3, "animal", "rabbit", true, 15); // Rabbit
-    createModel(undefined, 'src/assets/models/animals/low-poly_racoon_run_animation.glb', undefined, 1.2, "animal", "racoon", true, -15); // Racoon
-    createModel(undefined, 'src/assets/models/animals/low-poly_sheep.glb', undefined, 1.2, "animal", "sheep", true, -20, 1, 0, true, 3); // Sheep
-    createModel(undefined, 'src/assets/models/animals/rigged_mid_poly_horse.glb', undefined, 1.6, "animal", "horse", true, 20, 0, 0, true, 1.5); // Horse
-    createModel(wolfTexture, 'src/assets/models/animals/fully_rigged_ikfk_wolf.glb', undefined, 0.010, "animal", "wolf"); // Wolf - 'Run'
-    createModel(undefined, 'src/assets/models/animals/stylized_low_poly_german_shepherd.glb', "Idle1", 0.08, "animal", "shepperd", true, 0, 0, 5); // German shepperd puppy
+    createAnimals();
+    createModel(undefined, 'src/assets/farm_objects/props/fence.glb', undefined, 0.05, "building", "fence", true, -40); // Fence
+    createBlock();
 
     // Events listeners
     window.addEventListener('resize', onWindowResize);
@@ -65,8 +69,37 @@ function init() {
     container.appendChild(stats.dom);
 }
 
+function createBlock() {
+    let pos = { x: 5, y: 0, z: 5 };
+    let scale = { x: 5, y: 0, z: 5 };
+    let quat = { x: 5, y: 0, z: 0, w: 1 };
+    let mass = 0;
+
+    // Threejs section
+    let blockPlane = new THREE.Mesh(new THREE.BoxBufferGeometry(), new THREE.MeshPhongMaterial({ color: 0xa0afa4 }));
+    blockPlane.position.set(pos.x, pos.y, pos.z);
+    blockPlane.scale.set(scale.x, scale.y, scale.z);
+    blockPlane.castShadow = true;
+    blockPlane.receiveShadow = true;
+    scene.add(blockPlane);
+
+    //Ammojs Section
+    let transform = new Ammo.btTransform();
+    transform.setIdentity();
+    transform.setOrigin(new Ammo.btVector3(pos.x, pos.y, pos.z));
+    transform.setRotation(new Ammo.btQuaternion(quat.x, quat.y, quat.z, quat.w));
+    let motionState = new Ammo.btDefaultMotionState(transform);
+    let colShape = new Ammo.btBoxShape(new Ammo.btVector3(scale.x * 0.5, scale.y * 0.5, scale.z * 0.5));
+    colShape.setMargin(0.05);
+    let localInertia = new Ammo.btVector3(0, 0, 0);
+    colShape.calculateLocalInertia(mass, localInertia);
+    let rbInfo = new Ammo.btRigidBodyConstructionInfo(mass, motionState, colShape, localInertia);
+    let body = new Ammo.btRigidBody(rbInfo);
+    physicsWorld.addRigidBody(body);
+}
+
 function camInit() {
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 5000);
     camera.position.set(-5, 3, 10);
     // camera.lookAt(0, 2, 0);
 }
@@ -115,7 +148,11 @@ function createModel(texture, modelPath, anim = undefined, scale, type1, type2,
             });
         }
 
-        animals.push(model);
+        switch (type1) {
+            case "animal": animals.push(model); break;
+            case "building": buildings.push(model); break;
+        }
+
         scene.add(model);
         if (anim != undefined) createGUI(model, gltf.animations, anim);
 
@@ -127,7 +164,7 @@ function createModel(texture, modelPath, anim = undefined, scale, type1, type2,
 function sceneRendererInit() {
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0xe0e0e0);
-    scene.fog = new THREE.Fog(0xe0e0e0, 20, 100);
+    // scene.fog = new THREE.Fog(0xe0e0e0, 20, 100);
 
     renderer = new THREE.WebGLRenderer({ antialias: true });
     // renderer.setPixelRatio(window.devicePixelRatio);
@@ -242,6 +279,8 @@ function animate() {
     camcontrols.update();
 
     const dt = clock.getDelta();
+    updatePhysics(dt);
+
     if (modelReady) {
         mixer.update(dt);
 
@@ -285,7 +324,7 @@ function auxAction(aux, nxAux, loopPrev, loop, sound = false) {
     if (sound) play("whistle");
 }
 
-function activeActionCases(aux, walkAct = true, loopPrev = true, loop = false, sound) {    
+function activeActionCases(aux, walkAct = true, loopPrev = true, loop = false, sound) {
     if (activeAction == actions['Idle1']) auxAction(aux, 'Idle1', loopPrev, loop, sound);
     else if (activeAction == actions['LayDown']) auxAction(aux, 'LayDown', loopPrev, loop, sound);
     else if (activeAction == actions['SitDown']) auxAction(aux, 'SitDown', loopPrev, loop, sound);
@@ -300,4 +339,53 @@ function play(element, loop = false) {
             this.play();
         }, false);
     audio.play();
+}
+
+function createAnimals() {
+    // const wolfTexture = loadTexture('src/assets/textures/white1.jpg', false); // Texture
+    // createModel(wolfTexture, 'src/assets/models/animals/fully_rigged_ikfk_wolf.glb', undefined, 0.010, "animal", "wolf"); // Wolf - 'Run'
+    createModel(undefined, 'src/assets/models/animals/chicken_-_rigged.glb', 'chicken-rig|walking', 0.004, "animal", "chicken", true, 10, 0, 0, true, 90); // Chicken
+    createModel(undefined, 'src/assets/models/animals/bear_o_rigged.glb', undefined, 0.03, "animal", "bear", true, -10); // Bear
+    createModel(undefined, 'src/assets/models/animals/low_poly_deer.glb', undefined, 1.8, "animal", "deer", true, -5); // Deer
+    createModel(undefined, 'src/assets/models/animals/low_poly_fox_running_animation.glb', undefined, 0.1, "animal", "fox", true, 5, 0, 0, true, 89.7); // Fox
+    createModel(undefined, 'src/assets/models/animals/low_poly_rabbit.glb', undefined, 0.3, "animal", "rabbit", true, 15); // Rabbit
+    createModel(undefined, 'src/assets/models/animals/low-poly_racoon_run_animation.glb', undefined, 1.2, "animal", "racoon", true, -15); // Racoon
+    createModel(undefined, 'src/assets/models/animals/low-poly_sheep.glb', undefined, 1.2, "animal", "sheep", true, -20, 1, 0, true, 3); // Sheep
+    createModel(undefined, 'src/assets/models/animals/rigged_mid_poly_horse.glb', undefined, 1.6, "animal", "horse", true, 20, 0, 0, true, 1.5); // Horse
+    createModel(undefined, 'src/assets/models/animals/wolf.glb', undefined, 1.3, "animal", "wolf", true, 0); // Wolf
+    createModel(undefined, 'src/assets/models/animals/cat.glb', undefined, 0.05, "animal", "cat", true, 25, 0, 0, true, 4); // Cat
+    createModel(undefined, 'src/assets/models/animals/stylized_low_poly_german_shepherd.glb', "Idle1", 0.08, "animal", "shepperd", true, 0, 0, 5); // German shepperd puppy
+}
+
+function setupPhysicsWorld() { // https://medium.com/@bluemagnificent/intro-to-javascript-3d-physics-using-ammo-js-and-three-js-dd48df81f591
+    let collisionConfiguration = new Ammo.btDefaultCollisionConfiguration(),
+        dispatcher = new Ammo.btCollisionDispatcher(collisionConfiguration),
+        overlappingPairCache = new Ammo.btDbvtBroadphase(),
+        solver = new Ammo.btSequentialImpulseConstraintSolver();
+
+    physicsWorld = new Ammo.btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
+    physicsWorld.setGravity(new Ammo.btVector3(0, -10, 0));
+}
+
+function updatePhysics(dt) {
+
+    // Step world
+    physicsWorld.stepSimulation(dt, 10);
+
+    // Update rigid bodies
+    for (let i = 0; i < rigidBodies.length; i++) {
+        let objThree = rigidBodies[i];
+        let objAmmo = objThree.userData.physicsBody;
+        let ms = objAmmo.getMotionState();
+        if (ms) {
+
+            ms.getWorldTransform(tmpTrans);
+            let p = tmpTrans.getOrigin();
+            let q = tmpTrans.getRotation();
+            objThree.position.set(p.x(), p.y(), p.z());
+            objThree.quaternion.set(q.x(), q.y(), q.z(), q.w());
+
+        }
+    }
+
 }
