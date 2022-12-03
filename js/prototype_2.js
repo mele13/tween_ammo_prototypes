@@ -4,13 +4,14 @@ import { GUI } from '../build/lil-gui.module.min.js';
 import { GLTFLoader } from '../build/GLTFLoader.js';
 import { OrbitControls } from "https://threejs.org/examples/jsm/controls/OrbitControls.js";
 import { TWEEN } from '../build/tween.module.min.js';
+import { SkeletonHelper } from '../build/three.module.js';
 
 // Variable initialization
 let container, stats, clock, gui, mixer, actions, activeAction, previousAction;
-let camera, scene, renderer, model, face, t0, camcontrols;
+let camera, scene, renderer, model, face, t0, camcontrols, shepperd;
 
 // Objects
-let animals = [], sceneMeshes = [], animationActions = [];
+let animals = [], sceneMeshes = [];
 
 // Model movement
 const raycaster = new THREE.Raycaster();
@@ -39,18 +40,25 @@ function init() {
     // loadDirLight();
 
     createGroundGrid(); // Ground grid
+    play("forest_sounds", true);
 
     // Models & textures
-    const wolfTexture = loadTexture('./textures/white1.jpg', false); // Texture    
-    // const wolfTexture = loadTexture('./textures/cow_texture.jpg', false); // Texture    
-    createModel(wolfTexture, 'models/animals/fully_rigged_ikfk_wolf.glb', 'Run', 0.010, 0.010, 0.010); // Wolf
-    // createModel(wolfTexture, 'models/animals/chicken_-_rigged.glb', 'chicken-rig|walking', 0.010, 0.010, 0.010); // Chicken
-    // createModel(undefined, 'models/RobotExpressive.glb', 'Walking', 1, 1, 1); // Robot
-    
+    const wolfTexture = loadTexture('./assets/textures/white1.jpg', false); // Texture 
+    createModel(undefined, 'assets/models/animals/chicken_-_rigged.glb', 'chicken-rig|walking', 0.004, "animal", "chicken", true, 10, 0, 0, true, 90); // Chicken
+    createModel(undefined, 'assets/models/animals/bear_o_rigged.glb', undefined, 0.03, "animal", "bear", true, -10); // Bear
+    createModel(undefined, 'assets/models/animals/low_poly_deer.glb', undefined, 1.8, "animal", "deer", true, -5); // Deer
+    createModel(undefined, 'assets/models/animals/low_poly_fox_running_animation.glb', undefined, 0.1, "animal", "fox", true, 5, 0, 0, true, 89.7); // Fox
+    createModel(undefined, 'assets/models/animals/low_poly_rabbit.glb', undefined, 0.3, "animal", "rabbit", true, 15); // Rabbit
+    createModel(undefined, 'assets/models/animals/low-poly_racoon_run_animation.glb', undefined, 1.2, "animal", "racoon", true, -15); // Racoon
+    createModel(undefined, 'assets/models/animals/low-poly_sheep.glb', undefined, 1.2, "animal", "sheep", true, -20, 1, 0, true, 3); // Sheep
+    createModel(undefined, 'assets/models/animals/rigged_mid_poly_horse.glb', undefined, 1.6, "animal", "horse", true, 20, 0, 0, true, 1.5); // Horse
+    createModel(wolfTexture, 'assets/models/animals/fully_rigged_ikfk_wolf.glb', undefined, 0.010, "animal", "wolf"); // Wolf - 'Run'
+    createModel(undefined, 'assets/models/animals/stylized_low_poly_german_shepherd.glb', "Idle1", 0.08, "animal", "shepperd", true, 0, 0, 5); // German shepperd puppy
 
     // Events listeners
     window.addEventListener('resize', onWindowResize);
-    renderer.domElement.addEventListener("dblclick", onDoubleClick, false)
+    renderer.domElement.addEventListener("dblclick", onDoubleClick, false);
+    document.onkeydown = onKeyDown;
 
     // Stats initialization
     stats = new Stats();
@@ -85,10 +93,17 @@ function loadTexture(txPath, realism) {
     return texture;
 }
 
-function createModel(texture, modelPath, anim, scaleX, scaleY, scaleZ) {
+function createModel(texture, modelPath, anim = undefined, scale, type1, type2,
+    pos = false, posX = 0, posY = 0, posZ = 0, rot = false, rotY) {
+
     const loader = new GLTFLoader();
     loader.load(modelPath, function (gltf) {
-        gltf.scene.scale.set(scaleX, scaleY, scaleZ);
+
+        if (pos) { gltf.scene.position.set(posX, posY, posZ); }
+        if (rot) gltf.scene.rotation.y = rotY;
+        gltf.scene.scale.set(scale, scale, scale);
+
+        if (type2 == "shepperd") shepperd = gltf.scene;
         model = gltf.scene;
 
         if (texture != undefined) {
@@ -102,7 +117,7 @@ function createModel(texture, modelPath, anim, scaleX, scaleY, scaleZ) {
 
         animals.push(model);
         scene.add(model);
-        createGUI(model, gltf.animations, anim);
+        if (anim != undefined) createGUI(model, gltf.animations, anim);
 
     }, undefined, function (e) {
         console.error(e);
@@ -116,7 +131,7 @@ function sceneRendererInit() {
 
     renderer = new THREE.WebGLRenderer({ antialias: true });
     // renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize(window.innerWidth, window.innerHeight);    
+    renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 0.8;
     renderer.outputEncoding = THREE.sRGBEncoding;
@@ -146,29 +161,12 @@ function createGUI(model, animations, anim) {
         actions[clip.name] = action;
     }
 
-    // console.log(actions);
+    console.log(actions);
     activeAction = actions[anim];
     activeAction.play();
 
     modelReady = true; // Model can be rotated
 }
-
-// function fadeToAction(name, duration) {
-//     previousAction = activeAction;
-//     activeAction = actions[name];
-
-//     if (previousAction !== activeAction) {
-//         previousAction.fadeOut(duration);
-//     }
-
-//     activeAction
-//         .reset()
-//         .setEffectiveTimeScale(1)
-//         .setEffectiveWeight(1)
-//         .fadeIn(duration)
-//         .play();
-
-// }
 
 function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
@@ -188,36 +186,55 @@ function onDoubleClick(e) {
 
     if (intersects.length > 0) {
         const p = intersects[0].point;
-        const distance = model.position.distanceTo(p);
+        const distance = shepperd.position.distanceTo(p);
         const rotationMatrix = new THREE.Matrix4();
 
-        rotationMatrix.lookAt(p, model.position, model.up);
+        rotationMatrix.lookAt(p, shepperd.position, shepperd.up);
         targetQuaternion.setFromRotationMatrix(rotationMatrix);
 
+        setAction(actions['WalkCycle'], true)
+
         TWEEN.removeAll();
-        new TWEEN.Tween(model.position)
+        new TWEEN.Tween(shepperd.position)
             .to(
                 {
                     x: p.x,
                     y: p.y,
                     z: p.z,
                 },
-                (1000 / 5.2) * distance
-            ) // Runs 5 meters a second * the distance
+                (1000 / 2.2) * distance
+            ) // Runs 2 meters a second * the distance - 5 running
             .onUpdate(() => {
                 camcontrols.target.set(
-                    model.position.x,
-                    model.position.y + 1,
-                    model.position.z
+                    shepperd.position.x,
+                    shepperd.position.y + 1,
+                    shepperd.position.z
                 )
             })
             .start()
             .onComplete(() => {
-                // setAction(animationActions[2])
-                // activeAction.clampWhenFinished = true
-                // activeAction.loop = THREE.LoopOnce
+                setAction(actions['SitDown']);
+                activeAction.clampWhenFinished = true;
+                activeAction.loop = THREE.LoopOnce;
             });
     };
+}
+
+function setAction(toAction, loop) {
+    if (toAction != activeAction) {
+        previousAction = activeAction;
+        activeAction = toAction;
+        previousAction.fadeOut(0.1);
+
+        activeAction.reset();
+        activeAction.fadeIn(0.1);
+        activeAction.play();
+
+        if (!loop) {
+            activeAction.clampWhenFinished = true;
+            activeAction.loop = THREE.LoopOnce;
+        }
+    }
 }
 
 function animate() {
@@ -228,8 +245,8 @@ function animate() {
     if (modelReady) {
         mixer.update(dt);
 
-        if (!model.quaternion.equals(targetQuaternion))
-            model.quaternion.rotateTowards(targetQuaternion, dt * 10);
+        if (!shepperd.quaternion.equals(targetQuaternion))
+            shepperd.quaternion.rotateTowards(targetQuaternion, dt * 10);
     }
 
     TWEEN.update();
@@ -240,4 +257,45 @@ function animate() {
 
 function render() {
     renderer.render(scene, camera);
+}
+
+function onKeyDown(key) {
+    switch (key.keyCode) {
+        case 32: // Spacebar activates jump
+            // BUG: if spacebar is activated when reached point p - animation gets stuck in walkcycle instead of laying down (prev)
+            activeActionCases('Jump'); break;
+        case 71: // Key 'G' to play 'whistle' sound and activate ear twitch animation
+            play("whistle"); activeActionCases('IdleEarTwitch', false); break;
+        case 82: // Key 'R' to activate idle (standing) animation
+            activeActionCases('Idle1', false, false, true); break;
+        case 84: // Key 'T' to activate laying down animation
+            activeActionCases('LayDown', false, false); break;
+        case 89: // Key 'Y' to activate sit down animation
+            activeActionCases('SitDown', false, false); break;
+        case 66: // Key 'B' to activate scratching ear animation
+            activeActionCases('SitScratchEar', false); break;
+    }
+}
+
+function auxAction(aux, nxAux, loopPrev, loop) {
+    setAction(actions[aux], loop);
+    if (loopPrev) setTimeout(() => { setAction(actions[nxAux], true); }, 1500);
+}
+
+function activeActionCases(aux, walkAct = true, loopPrev = true, loop = false) {
+    if (activeAction == actions['Idle1']) auxAction(aux, 'Idle1', loopPrev, loop);
+    else if (activeAction == actions['LayDown']) auxAction(aux, 'LayDown', loopPrev, loop);
+    else if (activeAction == actions['SitDown']) auxAction(aux, 'SitDown', loopPrev, loop);
+    else if (activeAction == actions['WalkCycle']) if (walkAct) auxAction(aux, 'WalkCycle', loopPrev, loop);
+}
+
+function play(element, loop = false) {
+    var audio = document.getElementById(element);
+    if (loop)
+        document.getElementById(element).addEventListener('ended', function () {
+            this.currentTime = 0;
+            console.log("replayed");
+            this.play();
+        }, false);
+    audio.play();
 }
