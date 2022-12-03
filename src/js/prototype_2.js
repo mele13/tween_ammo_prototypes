@@ -10,10 +10,11 @@ import { AmmoPhysics } from '../build/physics.js';
 
 // Variable initialization
 let container, stats, statsContainer, clock, gui, mixer, actions, activeAction, previousAction;
-let camera, scene, renderer, model, face, t0, camcontrols, shepperd;
+let camera, scene, renderer, model, face, t0, camcontrols;
 
 // Objects
 let animals = [], sceneMeshes = [], buildings = [];
+let shepperd, chicken, bear, deer, fox, rabbit, racoon, sheep, horse, wolf, cat;
 
 // Model movement
 const raycaster = new THREE.Raycaster();
@@ -120,7 +121,7 @@ function createModel(texture, modelPath, anim = undefined, scale, type1, type2,
         if (rot) gltf.scene.rotation.y = rotY;
         gltf.scene.scale.set(scale, scale, scale);
 
-        if (type2 == "shepperd") shepperd = gltf.scene;
+        if (type2 === "shepperd") shepperd = gltf.scene;
         model = gltf.scene;
 
         if (texture != undefined) {
@@ -132,13 +133,10 @@ function createModel(texture, modelPath, anim = undefined, scale, type1, type2,
             });
         }
 
-        switch (type1) {
-            case "animal": animals.push(model); break;
-            case "building": buildings.push(model); break;
-        }
+        typeSwitchCase(type1, type2, gltf); 
 
         scene.add(model);
-        if (anim != undefined) createGUI(model, gltf.animations, anim);
+        if (anim != undefined) animateShepperd(model, gltf.animations, anim);
 
         // Physics in ammojs
         createRigidBodies(quat, mass, posX, posY, posZ, suz);        
@@ -146,6 +144,31 @@ function createModel(texture, modelPath, anim = undefined, scale, type1, type2,
     }, undefined, function (e) {
         console.error(e);
     });
+}
+
+function typeSwitchCase(type1, type2, gltf) {
+    switch (type1) {
+        case "animal": animals.push(model); break;
+        case "building": buildings.push(model); break;
+    }
+
+    switch (type2) {
+        case "chicken": animateChicken(gltf);
+        case "bear": bear = gltf;
+        case "deer": deer = gltf;
+        case "fox": fox = gltf;
+        case "rabbit": rabbit = gltf;
+        case "racoon": racoon = gltf;
+        case "sheep": sheep = gltf;
+        case "horse": horse = gltf;
+        case "wolf": wolf = gltf;
+        case "cat": cat = gltf;
+    }
+}
+
+function animateChicken(gltf) {
+    let chickenMixer = new THREE.AnimationMixer(gltf.scene);
+    (chickenMixer.clipAction(gltf.animations[1])).play();
 }
 
 function createRigidBodies(quat, mass, posX, posY, posZ, suz) {
@@ -234,7 +257,7 @@ function loadDirLight() {
     scene.add(dirLight);
 }
 
-function createGUI(model, animations, anim) {
+function animateShepperd(model, animations, anim) {
     mixer = new THREE.AnimationMixer(model);
 
     actions = {};
@@ -391,7 +414,7 @@ function play(element, loop = false) {
 function createAnimals() {
     // const wolfTexture = loadTexture('src/assets/textures/white1.jpg', false); // Texture
     // createModel(wolfTexture, 'src/assets/models/animals/fully_rigged_ikfk_wolf.glb', undefined, 0.010, "animal", "wolf"); // Wolf - 'Run'
-    createModel(undefined, 'src/assets/models/animals/chicken_-_rigged.glb', 'chicken-rig|walking', 0.004, "animal", "chicken", true, 10, 0, 0, true, 90); // Chicken
+    createModel(undefined, 'src/assets/models/animals/chicken_-_rigged.glb', 'chicken-rig|pecking', 0.004, "animal", "chicken", true, 10, 0, 0, true, 90); // Chicken
     createModel(undefined, 'src/assets/models/animals/bear_o_rigged.glb', undefined, 0.03, "animal", "bear", true, -10); // Bear
     createModel(undefined, 'src/assets/models/animals/low_poly_deer.glb', undefined, 1.8, "animal", "deer", true, -5); // Deer
     createModel(undefined, 'src/assets/models/animals/low_poly_fox_running_animation.glb', undefined, 0.1, "animal", "fox", true, 5, 0, 0, true, 89.7); // Fox
