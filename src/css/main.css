@@ -16,6 +16,8 @@ body {
 }
 
 #data-container-r { right: 1%; top: 2%; }
+#data-container-r2 { width: 40%; right: 2%; top: 2%; }
+#whatToDo { margin-bottom: -2%; }
 h2 { text-align: center; font-size: 20px; margin-bottom: -5%; }
 ul { font-size: 18px; list-style: square; }
 

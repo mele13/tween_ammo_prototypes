@@ -25,6 +25,8 @@ let transformAux1;
 let physicsWorld, tmpTrans, ammoClone;
 let rigidBodies = [];
 
+play("forest_sounds", true); // Surround sound    
+
 Ammo().then((AmmoLib) => {
     Ammo = AmmoLib;
     ammoClone = Ammo;
@@ -56,7 +58,6 @@ function init() {
     // loadDirLight();
 
     createGroundGrid(); // Ground grid
-    play("forest_sounds", true); // Surround sound    
 
     // Models & textures
     addFloors(), addAnimals(), addBuildings(), addVehicles(), addAssets(), addProps();
@@ -314,8 +315,8 @@ function onDoubleClick(e) {
                     y: p.y,
                     z: p.z,
                 },
-                (1000 / 2.2) * distance
-            ) // Runs 2 meters a second * the distance - 5 running
+                (1000 / 3.2) * distance
+            ) // Runs 3 meters a second * the distance - 5 running
             .onUpdate(() => {
                 camcontrols.target.set(
                     shepperd.position.x,
@@ -447,28 +448,28 @@ function addFloors() {
 }
 
 function addAnimals() {
-    // const wolfTexture = loadTexture('src/assets/textures/white1.jpg', false); // Texture
-    // createModel(wolfTexture, 'src/assets/models/animals/fully_rigged_ikfk_wolf.glb', undefined, 0.010, "animal", "wolf"); // Wolf - 'Run'
-    createModel(undefined, 'src/assets/models/animals/stylized_low_poly_german_shepherd.glb', "Idle1", 0.08, "animal", "shepperd", true, 10, 0, 20); // German shepperd puppy
-    createModel(undefined, 'src/assets/models/animals/chicken_-_rigged.glb', 'chicken-rig|pecking', 0.004, "animal", "chicken", true, -44, 0, -36, true, 90); // Chicken
-    createModel(undefined, 'src/assets/models/animals/chicken_-_rigged.glb', 'chicken-rig|sitting-idle', 0.004, "animal", "chicken2", true, -42, 0, -28, true, 3); // Chicken 2
-    createModel(undefined, 'src/assets/models/animals/chicken_-_rigged.glb', 'chicken-rig|sitting-idle', 0.004, "animal", "chicken3", true, -40, 0, -29, true, 5); // Chicken 3
-    createModel(undefined, 'src/assets/models/animals/chicken_-_rigged.glb', 'chicken-rig|sitting-idle', 0.004, "animal", "chicken3", true, -43, 0, -28.5, true, 1); // Chicken 4
-    createModel(undefined, 'src/assets/models/animals/bear_o_rigged.glb', 'Armature.BearO|Armature.BearOAction', 0.03, "animal", "bear", true, -28, 0.1, 50, true, 2); // Bear
-    createModel(undefined, 'src/assets/models/animals/low_poly_deer.glb', 'Armature|Eat', 1.8, "animal", "deer", true, 8, 0, 50, true, 2.2); // Deer
-    createModel(undefined, 'src/assets/models/animals/stylized_animated_fox.glb', 'Armature|Cinematic.001', 0.0035, "animal", "fox", true, -15, -0.1, 25, true, 2); // Fox
-    createModel(undefined, 'src/assets/models/animals/low_poly_rabbit.glb', 'Armature.001|Idle', 0.3, "animal", "rabbit", true, 0, 0.3, 0, true, 0); // Rabbit
-    createModel(undefined, 'src/assets/models/animals/low_poly_rabbit.glb', 'Armature.001|Idle', 0.3, "animal", "rabbit2", true, -25, 0.06, -30, true, 1); // Rabbit 2
-    createModel(undefined, 'src/assets/models/animals/low-poly_sheep.glb', 'Armature|ArmatureAction.002', 1.2, "animal", "sheep", true, -45, 1, -10, true, 5.5); // Sheep
-    createModel(undefined, 'src/assets/models/animals/low-poly_sheep.glb', 'Armature|ArmatureAction.002', 1.2, "animal", "sheep2", true, -45, 1, -15, true, 10); // Sheep 2
-    createModel(undefined, 'src/assets/models/animals/horse.glb', 'Horse_Idle', 0.015, "animal", "horse", true, 55, 1, 5, true, -2); // Horse
-    createModel(undefined, 'src/assets/models/animals/wolf.glb', 'Main', 1.3, "animal", "wolf", true, 47, 0, 62, true, -2.2); // Wolf
-    createModel(undefined, 'src/assets/models/animals/cat.glb', 'Take 001', 0.05, "animal", "cat", true, 48, 0, -45, true, 4); // Cat
-    createModel(undefined, 'src/assets/models/animals/frog_low_poly_trianguted.glb', undefined, 1, "animal", "frog", true, 23, 0.15, 38, true, 4); // Frog
+    // const wolfTexture = loadTexture('../assets/textures/white1.jpg', false); // Texture
+    // createModel(wolfTexture, '../assets/models/animals/fully_rigged_ikfk_wolf.glb', undefined, 0.010, "animal", "wolf"); // Wolf - 'Run'
+    createModel(undefined, '../assets/models/animals/stylized_low_poly_german_shepherd.glb', "Idle1", 0.08, "animal", "shepperd", true, 10, 0, 20); // German shepperd puppy
+    createModel(undefined, '../assets/models/animals/chicken_-_rigged.glb', 'chicken-rig|pecking', 0.004, "animal", "chicken", true, -44, 0, -36, true, 90); // Chicken
+    createModel(undefined, '../assets/models/animals/chicken_-_rigged.glb', 'chicken-rig|sitting-idle', 0.004, "animal", "chicken2", true, -42, 0, -28, true, 3); // Chicken 2
+    createModel(undefined, '../assets/models/animals/chicken_-_rigged.glb', 'chicken-rig|sitting-idle', 0.004, "animal", "chicken3", true, -40, 0, -29, true, 5); // Chicken 3
+    createModel(undefined, '../assets/models/animals/chicken_-_rigged.glb', 'chicken-rig|sitting-idle', 0.004, "animal", "chicken3", true, -43, 0, -28.5, true, 1); // Chicken 4
+    createModel(undefined, '../assets/models/animals/bear_o_rigged.glb', 'Armature.BearO|Armature.BearOAction', 0.03, "animal", "bear", true, -28, 0.1, 50, true, 2); // Bear
+    createModel(undefined, '../assets/models/animals/low_poly_deer.glb', 'Armature|Eat', 1.8, "animal", "deer", true, 8, 0, 50, true, 2.2); // Deer
+    createModel(undefined, '../assets/models/animals/stylized_animated_fox.glb', 'Armature|Cinematic.001', 0.0035, "animal", "fox", true, -15, -0.1, 25, true, 2); // Fox
+    createModel(undefined, '../assets/models/animals/low_poly_rabbit.glb', 'Armature.001|Idle', 0.3, "animal", "rabbit", true, 0, 0.3, 0, true, 0); // Rabbit
+    createModel(undefined, '../assets/models/animals/low_poly_rabbit.glb', 'Armature.001|Idle', 0.3, "animal", "rabbit2", true, -25, 0.06, -30, true, 1); // Rabbit 2
+    createModel(undefined, '../assets/models/animals/low-poly_sheep.glb', 'Armature|ArmatureAction.002', 1.2, "animal", "sheep", true, -45, 1, -10, true, 5.5); // Sheep
+    createModel(undefined, '../assets/models/animals/low-poly_sheep.glb', 'Armature|ArmatureAction.002', 1.2, "animal", "sheep2", true, -45, 1, -15, true, 10); // Sheep 2
+    createModel(undefined, '../assets/models/animals/horse.glb', 'Horse_Idle', 0.015, "animal", "horse", true, 55, 1, 5, true, -2); // Horse
+    createModel(undefined, '../assets/models/animals/wolf.glb', 'Main', 1.3, "animal", "wolf", true, 47, 0, 62, true, -2.2); // Wolf
+    createModel(undefined, '../assets/models/animals/cat.glb', 'Take 001', 0.05, "animal", "cat", true, 48, 0, -45, true, 4); // Cat
+    createModel(undefined, '../assets/models/animals/frog_low_poly_trianguted.glb', undefined, 1, "animal", "frog", true, 23, 0.15, 38, true, 4); // Frog
 }
 
 function addPond() {
-    const pondTexture = loadTexture('src/assets/textures/ocean_low_poly_texture.jfif', false); // Texture
+    const pondTexture = loadTexture('../assets/textures/ocean_low_poly_texture.jfif', false); // Texture
     createPond(15, 0.1, 27, 1, 0, 1, 0xffffff, 20, 0.05, 45, pondTexture); // pondTexture
 }
 
@@ -487,64 +488,64 @@ function createStreet() {
 }
 
 function addBuildings() {
-    createModel(undefined, 'src/assets/farm_objects/buildings/low-poly_barn.glb', undefined, 1.1, "building", "barn", true, -45, 3.5, -55, true, 0); // Barn
-    createModel(undefined, 'src/assets/farm_objects/buildings/stylized_house_demo.glb', undefined, 15, "building", "forest_house", true, 60, 0, -45, true, -1.55); // House
-    createModel(undefined, 'src/assets/farm_objects/buildings/chicken_coop.glb', undefined, 0.01, "building", "coop", true, -50, 0, -30, true, 1.65); // Chicken coop
-    createModel(undefined, 'src/assets/farm_objects/buildings/lowpoly_windmill_-_animated.glb', 'Animation', 4, "building", "coop", true, -60, 0.8, -10, true, 0); // Windmill
-    createModel(undefined, 'src/assets/farm_objects/buildings/treehouse.glb', undefined, 0.0035, "building", "treehouse", true, 60, 0, 25, true, 0); // Treehouse
+    createModel(undefined, '../assets/farm_objects/buildings/low-poly_barn.glb', undefined, 1.1, "building", "barn", true, -45, 3.5, -55, true, 0); // Barn
+    createModel(undefined, '../assets/farm_objects/buildings/stylized_house_demo.glb', undefined, 15, "building", "forest_house", true, 60, 0, -45, true, -1.55); // House
+    createModel(undefined, '../assets/farm_objects/buildings/chicken_coop.glb', undefined, 0.01, "building", "coop", true, -50, 0, -30, true, 1.65); // Chicken coop
+    createModel(undefined, '../assets/farm_objects/buildings/lowpoly_windmill_-_animated.glb', 'Animation', 4, "building", "coop", true, -60, 0.8, -10, true, 0); // Windmill
+    createModel(undefined, '../assets/farm_objects/buildings/treehouse.glb', undefined, 0.0035, "building", "treehouse", true, 60, 0, 25, true, 0); // Treehouse
 }
 
 function addVehicles() {
-    createModel(undefined, 'src/assets/farm_objects/cars/low-poly_truck_car_drifter.glb', 'Car engine', 0.015, "vehicle", "car", true, 40, 0.6, 2.5, true, 1.6); // Car
-    // createModel(undefined, 'src/assets/farm_objects/planes/cartoon_plane.glb', 'Main', 8, "vehicle", "plane", true, -20, 35, -10, true, 0); // Plane
-    createModel(undefined, 'src/assets/farm_objects/cars/combine_harvester.glb', undefined, 2, "vehicle", "harvester", true, -10, 0, -50, true, 2.2); // Harvester
+    createModel(undefined, '../assets/farm_objects/cars/low-poly_truck_car_drifter.glb', 'Car engine', 0.015, "vehicle", "car", true, 40, 0.6, 2.5, true, 1.6); // Car
+    // createModel(undefined, '../assets/farm_objects/planes/cartoon_plane.glb', 'Main', 8, "vehicle", "plane", true, -20, 35, -10, true, 0); // Plane
+    createModel(undefined, '../assets/farm_objects/cars/combine_harvester.glb', undefined, 2, "vehicle", "harvester", true, -10, 0, -50, true, 2.2); // Harvester
 }
 
 function addProps() {
     createFences(), createTrees(), createPlants();
-    createModel(undefined, 'src/assets/farm_objects/props/tree_block_set_2_change_colour.glb', undefined, 0.4, "prop", "tree_logs", true, 56, -1, -58); // Tree logs
-    createModel(undefined, 'src/assets/farm_objects/props/candy_corn_from_poly_by_google.glb', undefined, 0.01, "prop", "corn", true, -45, 0, -35); // Corn
-    createModel(undefined, 'src/assets/farm_objects/props/low_poly_picnic_table.glb', undefined, 0.02, "prop", "picnic_table", true, -6, 0, 55); // Picnic table
-    createModel(undefined, 'src/assets/farm_objects/props/water_bowl.glb', undefined, 2, "prop", "water_tray", true, -50, 0.26, -21, true, 0); // Water tray
-    createModel(undefined, 'src/assets/farm_objects/props/wood_barrel.glb', undefined, 3, "prop", "wood_barrel1", true, -55, 0, -48); // Wood barrel 1
-    createModel(undefined, 'src/assets/farm_objects/props/wood_barrel.glb', undefined, 3, "prop", "wood_barrel2", true, -53, 0, -48); // Wood barrel 2
-    createModel(undefined, 'src/assets/farm_objects/props/wood_barrel.glb', undefined, 3, "prop", "wood_barrel2", true, -54, 0, -46); // Wood barrel 2
-    createModel(undefined, 'src/assets/farm_objects/props/low_poly_road_sign.glb', undefined, 0.06, "prop", "wood_sign", true, 25, 0, 10, true, 3); // Wood sign
-    createModel(undefined, 'src/assets/farm_objects/props/low_poly_dock_bridge.glb', undefined, 0.006, "prop", "bridge", true, 18, -1, 52, true, 2.8); // Wood bridge
-    createModel(undefined, 'src/assets/farm_objects/props/sign.glb', undefined, 0.5, "prop", "sign_small", true, 48, 0, 33, true, 1.55); // Wood small sign
-    createModel(undefined, 'src/assets/farm_objects/props/desert-low_poly.glb', undefined, 0.01, "prop", "desert_texture", true, 60, -0.1, 25, true, 0); // Desert texture
+    createModel(undefined, '../assets/farm_objects/props/tree_block_set_2_change_colour.glb', undefined, 0.4, "prop", "tree_logs", true, 56, -1, -58); // Tree logs
+    createModel(undefined, '../assets/farm_objects/props/candy_corn_from_poly_by_google.glb', undefined, 0.01, "prop", "corn", true, -45, 0, -35); // Corn
+    createModel(undefined, '../assets/farm_objects/props/low_poly_picnic_table.glb', undefined, 0.02, "prop", "picnic_table", true, -6, 0, 55); // Picnic table
+    createModel(undefined, '../assets/farm_objects/props/water_bowl.glb', undefined, 2, "prop", "water_tray", true, -50, 0.26, -21, true, 0); // Water tray
+    createModel(undefined, '../assets/farm_objects/props/wood_barrel.glb', undefined, 3, "prop", "wood_barrel1", true, -55, 0, -48); // Wood barrel 1
+    createModel(undefined, '../assets/farm_objects/props/wood_barrel.glb', undefined, 3, "prop", "wood_barrel2", true, -53, 0, -48); // Wood barrel 2
+    createModel(undefined, '../assets/farm_objects/props/wood_barrel.glb', undefined, 3, "prop", "wood_barrel2", true, -54, 0, -46); // Wood barrel 2
+    createModel(undefined, '../assets/farm_objects/props/low_poly_road_sign.glb', undefined, 0.06, "prop", "wood_sign", true, 25, 0, 10, true, 3); // Wood sign
+    createModel(undefined, '../assets/farm_objects/props/low_poly_dock_bridge.glb', undefined, 0.006, "prop", "bridge", true, 18, -1, 52, true, 2.8); // Wood bridge
+    createModel(undefined, '../assets/farm_objects/props/sign.glb', undefined, 0.5, "prop", "sign_small", true, 48, 0, 33, true, 1.55); // Wood small sign
+    createModel(undefined, '../assets/farm_objects/props/desert-low_poly.glb', undefined, 0.01, "prop", "desert_texture", true, 60, -0.1, 25, true, 0); // Desert texture
 }
 
 function createPlants() {
-    createModel(undefined, 'src/assets/farm_objects/plants/allotment_farm.glb', undefined, 0.004, "plant", "allotment1", true, -20, 4, -39, true, 0); // Allotment 1
-    createModel(undefined, 'src/assets/farm_objects/plants/allotment_farm.glb', undefined, 0.004, "plant", "allotment2", true, -20, 4, -59, true, 0); // Allotment 2
-    createModel(undefined, 'src/assets/farm_objects/plants/allotment_farm.glb', undefined, 0.004, "plant", "allotment3", true, 0, 4, -39, true, 0); // Allotment 3
-    createModel(undefined, 'src/assets/farm_objects/plants/allotment_farm.glb', undefined, 0.004, "plant", "allotment4", true, 0, 4, -59, true, 0); // Allotment 4
-    createModel(undefined, 'src/assets/farm_objects/plants/reeds_low_poly.glb', undefined, 0.8, "plant", "reeds1", true, 0, 0.05, 20, true, 0); // Reeds 1
-    createModel(undefined, 'src/assets/farm_objects/plants/reeds_low_poly.glb', undefined, 0.8, "plant", "reeds1", true, -2, 0.05, 18, true, 0); // Reeds 2
-    createModel(undefined, 'src/assets/farm_objects/plants/reeds_low_poly.glb', undefined, 0.8, "plant", "reeds1", true, -7, 0.05, 18, true, 0); // Reeds 3
-    createModel(undefined, 'src/assets/farm_objects/plants/waterlily.glb', undefined, 1.2, "plant", "waterlily1", true, 25, 0.05, 40, true, 0); // Waterlily 1
-    createModel(undefined, 'src/assets/farm_objects/plants/waterlily.glb', undefined, 1.4, "plant", "waterlily2", true, 23, 0.05, 38, true, 0); // Waterlily 2
-    createModel(undefined, 'src/assets/farm_objects/plants/low_poly_plant_in_a_pot.glb', undefined, 0.4, "plant", "plant_pot", true, -40, 0.05, -1, true, 0); // Plant pot
+    createModel(undefined, '../assets/farm_objects/plants/allotment_farm.glb', undefined, 0.004, "plant", "allotment1", true, -20, 4, -39, true, 0); // Allotment 1
+    createModel(undefined, '../assets/farm_objects/plants/allotment_farm.glb', undefined, 0.004, "plant", "allotment2", true, -20, 4, -59, true, 0); // Allotment 2
+    createModel(undefined, '../assets/farm_objects/plants/allotment_farm.glb', undefined, 0.004, "plant", "allotment3", true, 0, 4, -39, true, 0); // Allotment 3
+    createModel(undefined, '../assets/farm_objects/plants/allotment_farm.glb', undefined, 0.004, "plant", "allotment4", true, 0, 4, -59, true, 0); // Allotment 4
+    createModel(undefined, '../assets/farm_objects/plants/reeds_low_poly.glb', undefined, 0.8, "plant", "reeds1", true, 0, 0.05, 20, true, 0); // Reeds 1
+    createModel(undefined, '../assets/farm_objects/plants/reeds_low_poly.glb', undefined, 0.8, "plant", "reeds1", true, -2, 0.05, 18, true, 0); // Reeds 2
+    createModel(undefined, '../assets/farm_objects/plants/reeds_low_poly.glb', undefined, 0.8, "plant", "reeds1", true, -7, 0.05, 18, true, 0); // Reeds 3
+    createModel(undefined, '../assets/farm_objects/plants/waterlily.glb', undefined, 1.2, "plant", "waterlily1", true, 25, 0.05, 40, true, 0); // Waterlily 1
+    createModel(undefined, '../assets/farm_objects/plants/waterlily.glb', undefined, 1.4, "plant", "waterlily2", true, 23, 0.05, 38, true, 0); // Waterlily 2
+    createModel(undefined, '../assets/farm_objects/plants/low_poly_plant_in_a_pot.glb', undefined, 0.4, "plant", "plant_pot", true, -40, 0.05, -1, true, 0); // Plant pot
 }
 
 function createTrees() {
-    createModel(undefined, 'src/assets/farm_objects/trees/forest_trees/tree_main_forest.glb', undefined, 0.024, "forest", "forest_tree1", true, -18, 0, 68); // Forest tree 1
-    createModel(undefined, 'src/assets/farm_objects/trees/farm_trees/tree_main_farm_1.glb', undefined, 0.25, "forest", "farm_tree1", true, 57, 0, -63); // Farm tree 1
-    createModel(undefined, 'src/assets/farm_objects/trees/farm_trees/tree_main_farm_1.glb', undefined, 0.25, "forest", "farm_tree2", true, 63, 0, -58); // Farm tree 2
+    createModel(undefined, '../assets/farm_objects/trees/forest_trees/tree_main_forest.glb', undefined, 0.024, "forest", "forest_tree1", true, -18, 0, 68); // Forest tree 1
+    createModel(undefined, '../assets/farm_objects/trees/farm_trees/tree_main_farm_1.glb', undefined, 0.25, "forest", "farm_tree1", true, 57, 0, -63); // Farm tree 1
+    createModel(undefined, '../assets/farm_objects/trees/farm_trees/tree_main_farm_1.glb', undefined, 0.25, "forest", "farm_tree2", true, 63, 0, -58); // Farm tree 2
 }
 
 function createFences() {
-    createModel(undefined, 'src/assets/farm_objects/props/low_poly_fence.glb', undefined, 0.01, "building", "fence1", true, 45.5, 0.5, 9.5); // Fence 1
-    createModel(undefined, 'src/assets/farm_objects/props/low_poly_fence.glb', undefined, 0.01, "building", "fence2", true, 54, 0.5, 9.5); // Fence 2
-    createModel(undefined, 'src/assets/farm_objects/props/low_poly_fence.glb', undefined, 0.01, "building", "fence3", true, 62.5, 0.5, 9.5); // Fence 3    
+    createModel(undefined, '../assets/farm_objects/props/low_poly_fence.glb', undefined, 0.01, "building", "fence1", true, 45.5, 0.5, 9.5); // Fence 1
+    createModel(undefined, '../assets/farm_objects/props/low_poly_fence.glb', undefined, 0.01, "building", "fence2", true, 54, 0.5, 9.5); // Fence 2
+    createModel(undefined, '../assets/farm_objects/props/low_poly_fence.glb', undefined, 0.01, "building", "fence3", true, 62.5, 0.5, 9.5); // Fence 3    
 }
 
 function addAssets() {
-    createModel(undefined, 'src/assets/farm_objects/hutt_in_forest_lowpoly_diorama.glb', undefined, 0.015, "forest", "forest_with_hut", true, -35, 0.36, 35, true, 1); // Forest with hut
-    createModel(undefined, 'src/assets/farm_objects/organic_farm.glb', undefined, 0.03, "asset", "organic_farm1", true, 60, 0.36, -5, true, 3.14); // Organic farm 1
-    createModel(undefined, 'src/assets/farm_objects/organic_farm.glb', undefined, 0.03, "asset", "organic_farm2", true, 60, 0.36, -15, true, 0); // Organic farm 2
-    createModel(undefined, 'src/assets/farm_objects/low_poly_landscape.glb', undefined, 2, "asset", "rock_landscape", true, 15, 1.5, 106.5, true, 2.5); // Rock landscape
+    createModel(undefined, '../assets/farm_objects/hutt_in_forest_lowpoly_diorama.glb', undefined, 0.015, "forest", "forest_with_hut", true, -35, 0.36, 35, true, 1); // Forest with hut
+    createModel(undefined, '../assets/farm_objects/organic_farm.glb', undefined, 0.03, "asset", "organic_farm1", true, 60, 0.36, -5, true, 3.14); // Organic farm 1
+    createModel(undefined, '../assets/farm_objects/organic_farm.glb', undefined, 0.03, "asset", "organic_farm2", true, 60, 0.36, -15, true, 0); // Organic farm 2
+    createModel(undefined, '../assets/farm_objects/low_poly_landscape.glb', undefined, 2, "asset", "rock_landscape", true, 15, 1.5, 106.5, true, 2.5); // Rock landscape
 }
 
 function setupPhysicsWorld() { // https://medium.com/@bluemagnificent/intro-to-javascript-3d-physics-using-ammo-js-and-three-js-dd48df81f591

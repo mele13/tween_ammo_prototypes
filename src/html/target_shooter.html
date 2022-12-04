@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Target Shooting</title>
+    <link rel="icon" href="../assets/img/target.png" type="image/x-icon">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link type="text/css" rel="stylesheet" href="../css/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="data-container" id="data-container-r2">
+        <h2 id="whatToDo">How to play</h2>
+        <ul dir="auto" style="list-style: none; text-align: center;">
+            <li id="kb_jump" class="hoverer">Try to hit as many objects as you can</li>
+            <li id="kb_jump" class="hoverer">Are you able to hit them before they reach the floor?</li>
+        </ul>
+    </div> 
+
+    <!-- Import maps polyfill -->
+    <!-- Remove this when import maps will be widely supported -->
+    <script async src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
+    <script src="../build/ammo.wasm.js"></script>
+
+    <script type="importmap">
+			{
+				"imports": {
+					"three": "../build/three.module.js",
+					"three/addons/": "../jsm/"
+				}
+			}
+		</script>
+
+    <!-- <script src="../build/three.js"></script>
+    <script type="module" src="../build/GLTFLoader.js"></script>
+    <script src="../build/dat.gui.js"></script>
+    <script src="../build/tween.umd.js"></script>
+    <script src="../build/ammo.js"></script>
+    <script type="module" src="../build/stats.module.js"></script>
+    <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script> -->
+  
+    <script type="module" src="../js/prototype_1.js"></script>
+</body>
+
+</html>
