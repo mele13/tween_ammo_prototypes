@@ -463,7 +463,7 @@ function addAnimals() {
     createModel(undefined, '../assets/models/animals/low-poly_sheep.glb', 'Armature|ArmatureAction.002', 1.2, "animal", "sheep", true, -45, 1, -10, true, 5.5); // Sheep
     createModel(undefined, '../assets/models/animals/low-poly_sheep.glb', 'Armature|ArmatureAction.002', 1.2, "animal", "sheep2", true, -45, 1, -15, true, 10); // Sheep 2
     createModel(undefined, '../assets/models/animals/horse.glb', 'Horse_Idle', 0.015, "animal", "horse", true, 55, 1, 5, true, -2); // Horse
-    createModel(undefined, '../assets/models/animals/wolf.glb', 'Main', 1.3, "animal", "wolf", true, 47, 0, 62, true, -2.2); // Wolf
+    createModel(undefined, '../assets/models/animals/wolf.glb', 'Main', 1.3, "animal", "wolf", true, 40, 1.5, 55, true, -2.2); // Wolf
     createModel(undefined, '../assets/models/animals/cat.glb', 'Take 001', 0.05, "animal", "cat", true, 48, 0, -45, true, 4); // Cat
     createModel(undefined, '../assets/models/animals/frog_low_poly_trianguted.glb', undefined, 1, "animal", "frog", true, 23, 0.15, 38, true, 4); // Frog
 }
