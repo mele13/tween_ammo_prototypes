@@ -1,4 +1,4 @@
-# Showing Data on Maps
+# Tween Ammo Prototypes
 This project contains a set of interactive prototypes developed as part of the Graphic Computer Science course (IG11)]. The prototypes showcase the integration of various libraries, including Tween.js and Ammo.js, to create interactive experiences. The project also explores AI art proposals.
 
 **Please Note: This project is developed solely for a university project. It is a frontend-only application without backend integration.**
