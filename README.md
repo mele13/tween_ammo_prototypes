@@ -18,15 +18,15 @@ This project is a collection of interactive prototypes that demonstrate the inte
 ## Prototypes
 ### Sheppy the Explorer
 Sheppy the Explorer prototype showcases an interactive character that can perform various actions. Users can control the character's movements and trigger actions such as jumping, whistling, standing up, sitting down, and more.
-https://github.com/mele13/tween_ammo_prototypes/assets/87198060/6b26ae8d-c527-4bc2-8359-89452435243a
+![ezgif com-video-to-gif (1)](https://github.com/mele13/tween_ammo_prototypes/assets/87198060/b8e853e2-5c18-4a88-9e0f-d34eef4ece26)
 
 ### Target Shooting
 The Target Shooting prototype provides an interactive shooting experience. Users can aim and shoot at moving targets to score points. The prototype utilizes Ammo.js physics for realistic interactions.
-https://github.com/mele13/tween_ammo_prototypes/assets/87198060/79d27c37-fc0f-4bca-90b4-236046c2f0dd
+![ezgif com-video-to-gif (2)](https://github.com/mele13/tween_ammo_prototypes/assets/87198060/1f073745-4388-4cbf-991f-40bd534e9ba2)
 
 ### AI Art Proposal
 The AI Art Proposal prototype presents AI-generated art compositions. It displays different versions of images created using AI art tools like goArt and hotpot. Each image pair consists of an AI-generated version produced with goArt and another version produced with hotpot.
-https://github.com/mele13/tween_ammo_prototypes/assets/87198060/18567b7d-cee2-4063-a83b-123820279d30
+![ezgif com-optimize](https://github.com/mele13/tween_ammo_prototypes/assets/87198060/32edaa88-794c-4bee-8dc9-376071c2f674)
 
 ## Getting Started
 To get started with the project, follow these steps:
